@@ -68,3 +68,43 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+# Deployment Instructions for Write-Assist
+
+This README explains how to build, push, and deploy the **write-assist** application using Docker and Google Cloud Run.
+
+## Prerequisites
+
+- Docker installed and running  
+- Google Cloud SDK (`gcloud`) installed and authenticated  
+- A Google Cloud project with billing enabled  
+- Google Container Registry (GCR) enabled in your project  
+- Permissions to deploy to Cloud Run in your chosen region  
+
+---
+
+## Build the Docker Image
+
+Build the Docker image targeting the `linux/amd64` platform and tag it for your Google Container Registry repository:
+
+```bash
+docker build --platform linux/amd64 -t gcr.io/psyched-magnet-440010-k7/write-assist .
+```
+
+# Push the Docker Image to Google Container Registry
+Push the built image to GCR so it can be used by Cloud Run:
+
+```bash
+docker push gcr.io/psyched-magnet-440010-k7/write-assist
+```
+
+# Deploy to Google Cloud Run
+Deploy the container image to Cloud Run in the europe-west2 region with public (unauthenticated) access:
+
+```bash
+gcloud run deploy write-assist \
+  --image gcr.io/psyched-magnet-440010-k7/write-assist \
+  --platform managed \
+  --region europe-west2 \
+  --allow-unauthenticated
+```

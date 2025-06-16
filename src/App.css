@@ -1,38 +1,479 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  background-color: #f5f5f5;
+  color: #333;
+}
+
 .App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
   min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.container {
+  width: 100%;
+  max-width: 800px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+}
+
+h1 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 30px;
+  font-size: 2.5rem;
+}
+
+.prompt-form {
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #555;
+  font-size: 1.1rem;
+}
+
+textarea {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: inherit;
+  resize: vertical;
+  transition: border-color 0.3s;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: #4CAF50;
+}
+
+textarea:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+button {
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.send-button {
+  background-color: #4CAF50;
+  color: white;
+  flex: 1;
+}
+
+.send-button:hover:not(:disabled) {
+  background-color: #45a049;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.send-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.clear-button {
+  background-color: #f44336;
+  color: white;
+  padding: 12px 20px;
+}
+
+.clear-button:hover {
+  background-color: #da190b;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.response-section {
+  margin-top: 30px;
+  animation: fadeIn 0.5s ease-in;
+}
+
+.response-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.response-header h2 {
+  color: #2c3e50;
+  font-size: 1.5rem;
+}
+
+.copy-button {
+  background-color: #2196F3;
+  color: white;
+  padding: 8px 16px;
+  font-size: 14px;
+}
+
+.copy-button:hover {
+  background-color: #0b7dda;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.response-container {
+  background-color: #f8f9fa;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  padding: 20px;
+  min-height: 200px;
+  max-height: 600px; /* Zvýšené pre lepšie zobrazenie dlhších textov */
+  overflow-y: auto;
+}
+
+.loader {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  min-height: 150px;
 }
 
-.App-link {
-  color: #61dafb;
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #4CAF50;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
 }
 
-@keyframes App-logo-spin {
+/* Markdown špecifické štýly */
+.formatted-response {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  line-height: 1.8;
+  color: #333;
+}
+
+/* Markdown komponenty */
+.markdown-greeting {
+  color: #2c3e50;
+  font-size: 1.3em;
+  margin-bottom: 1.5em;
+  font-weight: 600;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 0.5em;
+}
+
+.markdown-divider {
+  margin: 2em 0;
+  border: none;
+  border-top: 2px solid #e0e0e0;
+}
+
+.markdown-paragraph {
+  margin-bottom: 1.2em;
+  text-align: justify;
+  font-size: 16px;
+}
+
+.markdown-bold {
+  color: #1a1a1a;
+  font-weight: 600;
+  background-color: #fff3cd;
+  padding: 0 4px;
+  border-radius: 3px;
+}
+
+.markdown-italic {
+  color: #555;
+  font-style: italic;
+}
+
+/* Štýly pre všetky Markdown elementy */
+.formatted-response h1,
+.formatted-response h2,
+.formatted-response h3,
+.formatted-response h4,
+.formatted-response h5,
+.formatted-response h6 {
+  margin-top: 1.5em;
+  margin-bottom: 0.8em;
+  color: #2c3e50;
+}
+
+.formatted-response p {
+  margin-bottom: 1.2em;
+  line-height: 1.8;
+}
+
+.formatted-response ul,
+.formatted-response ol {
+  margin-left: 2em;
+  margin-bottom: 1.2em;
+}
+
+.formatted-response li {
+  margin-bottom: 0.5em;
+  line-height: 1.6;
+}
+
+.formatted-response blockquote {
+  border-left: 4px solid #4CAF50;
+  padding-left: 1em;
+  margin: 1.5em 0;
+  color: #666;
+  font-style: italic;
+  background-color: #f9f9f9;
+  padding: 1em;
+  border-radius: 0 8px 8px 0;
+}
+
+.formatted-response code {
+  background-color: #f5f5f5;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9em;
+  color: #d63384;
+}
+
+.formatted-response pre {
+  background-color: #f5f5f5;
+  padding: 1em;
+  border-radius: 5px;
+  overflow-x: auto;
+  margin-bottom: 1.2em;
+  border: 1px solid #e0e0e0;
+}
+
+.formatted-response pre code {
+  background-color: transparent;
+  padding: 0;
+  color: #333;
+}
+
+.formatted-response table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5em;
+}
+
+.formatted-response th,
+.formatted-response td {
+  border: 1px solid #ddd;
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.formatted-response th {
+  background-color: #f5f5f5;
+  font-weight: 600;
+}
+
+.formatted-response a {
+  color: #2196F3;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s;
+}
+
+.formatted-response a:hover {
+  border-bottom-color: #2196F3;
+}
+
+/* Animácie */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
   from {
-    transform: rotate(0deg);
+    opacity: 0;
+    transform: translateY(10px);
   }
   to {
-    transform: rotate(360deg);
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+  .container {
+    padding: 20px;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+  
+  .button-group {
+    flex-direction: column;
+  }
+  
+  .clear-button {
+    width: 100%;
+  }
+  
+  .markdown-paragraph,
+  .formatted-response p {
+    text-align: left;
+    font-size: 15px;
+  }
+  
+  .response-container {
+    max-height: 400px;
+  }
+}
+
+/* Scrollbar styling */
+.response-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.response-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.response-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.response-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Tlač */
+@media print {
+  .button-group,
+  .copy-button,
+  .response-header h2 {
+    display: none;
+  }
+  
+  .response-container {
+    max-height: none;
+    border: none;
+    padding: 0;
+  }
+}
+
+/* Špecifické štýly pre slovenský obsah */
+.formatted-response {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  line-height: 1.8;
+  color: #2c3e50;
+  font-size: 16px;
+}
+
+.markdown-greeting {
+  color: #1a472a;
+  font-size: 1.4em;
+  margin-bottom: 1.5em;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+
+.markdown-paragraph {
+  margin-bottom: 1.3em;
+  text-align: justify;
+  color: #333;
+  line-height: 1.8;
+}
+
+.markdown-bold {
+  color: #d32f2f;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.markdown-italic {
+  color: #555;
+  font-style: italic;
+  display: block;
+  margin: 0.5em 0;
+}
+
+.markdown-list,
+.markdown-list-ordered {
+  margin: 1.5em 0 1.5em 2em;
+  line-height: 1.8;
+}
+
+.markdown-list-item {
+  margin-bottom: 0.8em;
+  color: #444;
+}
+
+.markdown-list-item::marker {
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+.markdown-divider {
+  margin: 2.5em 0 2em 0;
+  border: none;
+  height: 2px;
+  background: linear-gradient(to right, transparent, #e0e0e0 20%, #e0e0e0 80%, transparent);
+}
+
+/* Emoji v texte */
+.formatted-response strong:has-text("🔔") {
+  display: inline-block;
+  background-color: #fff3cd;
+  padding: 4px 12px;
+  border-radius: 4px;
+  margin: 0.5em 0;
+}
+
+/* Posledné odseky (podpis) */
+.formatted-response > p:last-child,
+.formatted-response > p:nth-last-child(2) {
+  text-align: right;
+  margin-top: 2em;
+  padding-top: 1em;
+}
+
+/* Responzívny dizajn */
+@media (max-width: 600px) {
+  .markdown-paragraph {
+    text-align: left;
+    font-size: 15px;
+  }
+  
+  .formatted-response > p:last-child,
+  .formatted-response > p:nth-last-child(2) {
+    text-align: left;
   }
 }

@@ -12,7 +12,7 @@ function App() {
   const [messageType, setMessageType] = useState('SMS');
   const [dropdownOpen, setDropdownOpen] = useState(false); // New state for dropdown
 
-  const N8N_WEBHOOK_URL = 'http://localhost:5678/webhook-test/8f737c09-7579-4a6b-ac6a-bfcd1a71784b';
+  const N8N_WEBHOOK_URL = 'https://n8n-733563965847.europe-west2.run.app/webhook/8f737c09-7579-4a6b-ac6a-bfcd1a71784b';
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -9,6 +9,8 @@ function App() {
   const [prompt, setPrompt] = useState('');
   const [response, setResponse] = useState('');
   const [loading, setLoading] = useState(false);
+  const [messageType, setMessageType] = useState('SMS');
+  const [dropdownOpen, setDropdownOpen] = useState(false); // New state for dropdown
 
   const N8N_WEBHOOK_URL = 'http://localhost:5678/webhook-test/8f737c09-7579-4a6b-ac6a-bfcd1a71784b';
 
@@ -26,6 +28,7 @@ function App() {
     try {
       const result = await axios.post(N8N_WEBHOOK_URL, {
         prompt: prompt,
+        messageType: messageType,
         timestamp: new Date().toISOString()
       }, {
         headers: {
@@ -34,10 +37,8 @@ function App() {
         timeout: 30000
       });
 
-      // Spracovanie odpovede - nahradenie \n za skutočné nové riadky
       let processedResponse = result.data.message || JSON.stringify(result.data, null, 2);
       
-      // Ak response obsahuje \n ako string, nahraď ich skutočnými novými riadkami
       if (typeof processedResponse === 'string') {
         processedResponse = processedResponse.replace(/\\n/g, '\n');
       }
@@ -68,42 +69,30 @@ function App() {
     setResponse('');
   };
 
-  // Vylepšená funkcia pre konverziu na Markdown
+  const handleMessageTypeSelect = (type) => {
+    setMessageType(type);
+    setDropdownOpen(false);
+  };
+
   const convertToMarkdown = (text) => {
     if (!text) return '';
     
     let markdown = text;
     
-    // Základné formátovanie pre slovenské texty
     markdown = markdown
-      // Pozdravy - h3
       .replace(/^(Vážený.*?[,:]?)$/gm, '### $1')
       .replace(/^(Dobrý deň.*?[,:]?)$/gm, '### $1')
       .replace(/^(Milý.*?[,:]?)$/gm, '### $1')
-      
-      // Podpisy - kurzíva s oddeľovačom
       .replace(/^(S úctou.*?)$/gm, '\n---\n\n*$1*')
       .replace(/^(S pozdravom.*?)$/gm, '\n---\n\n*$1*')
       .replace(/^(Srdečne.*?)$/gm, '\n---\n\n*$1*')
       .replace(/^(S vďakou.*?)$/gm, '\n---\n\n*$1*')
-      
-      // Tím/Podpis - tučné
       .replace(/^(Váš tím.*?)$/gm, '**$1**')
       .replace(/^(Tím .*?)$/gm, '**$1**')
-      
-      // Dôležité slová - tučné so zvýraznením
       .replace(/\b(DÔLEŽITÉ|UPOZORNENIE|POZNÁMKA|TIP|NOVINKA|AKCIA)\b:/g, '\n**🔔 $1:**')
-      
-      // Ďakovné frázy - kurzíva
       .replace(/^(Ďakujeme.*?)$/gm, '*$1*')
-      
-      // Bullet points - nahradiť • za -
       .replace(/^[•·]\s/gm, '- ')
-      
-      // Číslovanie - pridať medzeru
       .replace(/^(\d+)\.\s/gm, '$1. ')
-      
-      // Pridať medzeru medzi odsekmi pre lepšiu čitateľnosť
       .replace(/\n\n/g, '\n\n');
     
     return markdown;
@@ -115,6 +104,36 @@ function App() {
         <h1>Copywriter Assistant</h1>
         
         <form onSubmit={handleSubmit} className="prompt-form">
+          <div className="form-group">
+            <label>Typ správy:</label>
+            <div className="dropdown-container">
+              <button
+                type="button"
+                className="dropdown-button"
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                disabled={loading}
+              >
+                {messageType} ▼
+              </button>
+              {dropdownOpen && (
+                <div className="dropdown-menu">
+                  <div 
+                    className="dropdown-item"
+                    onClick={() => handleMessageTypeSelect('SMS')}
+                  >
+                    SMS
+                  </div>
+                  <div 
+                    className="dropdown-item"
+                    onClick={() => handleMessageTypeSelect('Mail')}
+                  >
+                    Mail
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
           <div className="form-group">
             <label htmlFor="prompt">Zadajte váš prompt:</label>
             <textarea
